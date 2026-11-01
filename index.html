@@ -1,255 +1,259 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#eeeae1">
-<title>Rumah — Family Dashboard</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#c9dff0">
+<title>Rumah TV</title>
 <style>
 :root{
-  --bg:#eeeae1; --paper:rgba(255,255,255,.58); --paper2:rgba(255,255,255,.38);
-  --ink:#343a34; --muted:#85877e; --sage:#879783; --sage-dark:#647762;
-  --line:rgba(75,84,70,.12); --shadow:0 12px 36px rgba(73,75,62,.07);
+  --ink:#263744; --muted:#536875; --glass:rgba(248,252,255,.78);
+  --glass-line:rgba(255,255,255,.88); --sage:#9bbd7c; --sage-dark:#607e57;
+  --shadow:0 10px 28px rgba(42,67,83,.13);
 }
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg)}
-body{
-  min-height:100vh; overflow-x:hidden;
-  background:
-    radial-gradient(ellipse at 8% 5%,rgba(255,255,255,.72),transparent 36%),
-    radial-gradient(ellipse at 92% 92%,rgba(170,183,158,.24),transparent 34%),
-    linear-gradient(135deg,#f1eee7,#e8e5db);
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Roboto,"Arial",sans-serif;color:var(--ink)}
+body{background:linear-gradient(180deg,#b8d5e9 0%,#d9e8ee 54%,#dce8cf 100%)}
+.scene{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.scene svg{width:100%;height:100%;display:block}
+.scrim{position:fixed;inset:0;z-index:1;background:linear-gradient(180deg,rgba(33,61,79,.06),rgba(33,61,79,.03) 55%,rgba(28,48,39,.08));pointer-events:none}
+.ui{position:relative;z-index:2;width:100%;height:100%;padding:4.8vh 5.2vw 4vh;display:flex;flex-direction:column;justify-content:space-between}
+.top{display:grid;grid-template-columns:1fr 1.05fr;gap:3vw;align-items:center}
+.dateblock{color:#fdfdf8;text-shadow:0 2px 8px rgba(32,54,67,.2)}
+.date{font-size:clamp(18px,2.05vw,30px);font-weight:500;letter-spacing:.01em}
+.hijri{font-size:clamp(13px,1.35vw,19px);margin-top:8px;color:rgba(255,255,255,.9);font-weight:400}
+.clockrow{display:flex;align-items:baseline;gap:12px;margin-top:16px;white-space:nowrap}
+.clock{font-size:clamp(76px,10vw,150px);font-weight:300;line-height:.92;letter-spacing:-.065em;color:#fff;text-shadow:0 3px 12px rgba(32,54,67,.22);font-variant-numeric:tabular-nums}
+.ampm{font-size:clamp(23px,2.8vw,40px);font-weight:400;color:#fff;text-shadow:0 2px 8px rgba(32,54,67,.2)}
+.next{justify-self:end;width:min(100%,650px);padding:23px 30px;border:1px solid var(--glass-line);border-radius:27px;background:var(--glass);box-shadow:var(--shadow);backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);display:grid;grid-template-columns:1fr auto 1.25fr;align-items:center;gap:22px}
+.nextlabel{font-size:clamp(15px,1.6vw,23px);font-weight:500;color:#334957}
+.nextname{font-size:clamp(32px,4vw,58px);font-weight:500;line-height:1.08;margin-top:7px}
+.nextdivider{height:72px;width:1px;background:rgba(48,69,82,.25)}
+.count{font-size:clamp(31px,3.5vw,52px);font-weight:400;letter-spacing:.015em;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:center}
+.countcaption{font-size:10px;letter-spacing:.14em;text-align:center;color:#617582;margin-top:5px}
+.timelinewrap{margin-top:2.4vh;padding:20px 2.3vw 16px;border-radius:25px;background:rgba(248,252,255,.72);border:1px solid rgba(255,255,255,.9);box-shadow:var(--shadow);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.timeline{position:relative;height:112px;margin:0 1.3vw}
+.track{position:absolute;left:0;right:0;top:24px;height:5px;background:rgba(76,99,110,.28);border-radius:9px}
+.progress{position:absolute;left:0;top:24px;height:5px;width:0;background:linear-gradient(90deg,#bdd49a,#86ad70);border-radius:9px}
+.tick{position:absolute;top:17px;width:1px;height:18px;background:rgba(72,91,100,.3)}
+.ticklabel{position:absolute;top:46px;transform:translateX(-50%);font-size:clamp(9px,.85vw,12px);color:#657782;white-space:nowrap}
+.prayermarker{position:absolute;top:15px;transform:translateX(-50%);text-align:center;min-width:60px}
+.dot{width:19px;height:19px;margin:0 auto 10px;border-radius:50%;background:#fff;border:2px solid #8da2a6;box-shadow:0 1px 4px rgba(40,60,70,.14)}
+.prayermarker.nextmarker .dot{width:24px;height:24px;margin-top:-2px;background:#a6c981;border:3px solid #fff;box-shadow:0 0 0 2px #8eae70}
+.pname{font-size:clamp(11px,1.1vw,15px);font-weight:600;color:#344d5b;white-space:nowrap}
+.ptime{font-size:clamp(10px,1vw,14px);color:#627783;margin-top:4px;white-space:nowrap}
+.apps{display:flex;justify-content:center;gap:clamp(14px,2.2vw,34px);margin-top:2vh}
+.app{width:clamp(120px,14vw,205px);height:clamp(105px,13vw,165px);border-radius:24px;border:1px solid rgba(255,255,255,.94);background:rgba(250,252,255,.78);box-shadow:var(--shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#304957;text-decoration:none;cursor:pointer;transition:transform .15s,background .15s;outline:none}
+.app:focus,.app:hover{transform:translateY(-4px) scale(1.025);background:rgba(255,255,255,.96);box-shadow:0 0 0 3px rgba(255,255,255,.7),0 12px 30px rgba(42,67,83,.2)}
+.app svg{width:clamp(31px,3.7vw,52px);height:clamp(31px,3.7vw,52px);stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.app.youtube .play{fill:#e75c55;stroke:#e75c55}
+.app.youtube .playtri{fill:white;stroke:white}
+.app.netflix .n{font-size:clamp(37px,4vw,56px);font-weight:800;color:#d94343;line-height:1}
+.applabel{font-size:clamp(14px,1.35vw,19px);font-weight:500}
+.footer{display:flex;justify-content:space-between;color:rgba(255,255,255,.88);font-size:11px;text-shadow:0 1px 5px rgba(28,48,58,.25);margin-top:1vh}
+.status{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:5;padding:9px 15px;border-radius:20px;background:rgba(35,53,63,.86);color:#fff;font-size:12px;display:none}
+.status.show{display:block}
+.modal{position:fixed;inset:0;z-index:6;display:none;align-items:center;justify-content:center;background:rgba(29,48,58,.3);padding:20px}
+.modal.show{display:flex}
+.modalbox{width:min(420px,95vw);padding:25px;border-radius:22px;background:rgba(248,252,255,.96);box-shadow:0 15px 50px rgba(0,0,0,.2)}
+.modalbox h2{font-size:22px;font-weight:500;margin:0 0 14px}
+.modalbox p{font-size:14px;line-height:1.55;color:#5d707b}
+.modalactions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.modalactions button{border:0;border-radius:12px;padding:10px 17px;background:#78966a;color:white;font-size:14px}
+@media(max-width:800px){
+ .ui{padding:4vh 4vw 3vh}.top{grid-template-columns:1fr;gap:16px}.next{justify-self:stretch;width:100%}
+ .timelinewrap{margin-top:2vh}.apps{gap:8px}.app{width:18%;height:90px;border-radius:17px}.applabel{font-size:11px}
+ .footer{display:none}
 }
-.shell{max-width:1600px;margin:auto;padding:34px 42px 28px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
-.brand{display:flex;align-items:center;gap:12px}
-.mark{width:42px;height:42px;border-radius:14px;background:#dce3d6;display:grid;place-items:center;color:var(--sage-dark);font-size:21px}
-.brandname{font-size:19px;letter-spacing:.16em;font-weight:700}
-.tagline{font-size:10px;color:var(--muted);letter-spacing:.16em;margin-top:4px;text-transform:uppercase}
-.topright{display:flex;gap:10px;align-items:center}
-.pill{border:1px solid var(--line);background:var(--paper2);border-radius:30px;padding:9px 14px;font-size:12px;color:var(--muted)}
-button{font:inherit;cursor:pointer}
-.settings{border:1px solid var(--line);background:var(--paper);border-radius:30px;padding:10px 15px;color:var(--ink)}
-.hero{display:grid;grid-template-columns:1.45fr .85fr;gap:18px;margin-bottom:18px}
-.card{background:var(--paper);border:1px solid rgba(255,255,255,.72);border-radius:24px;box-shadow:var(--shadow);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
-.welcome{padding:30px 34px;position:relative;overflow:hidden;min-height:210px}
-.welcome:after{content:"";position:absolute;width:230px;height:230px;border:1px solid rgba(135,151,131,.18);border-radius:50%;right:-55px;top:-95px;box-shadow:0 0 0 24px rgba(135,151,131,.035),0 0 0 50px rgba(135,151,131,.025)}
-.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:var(--sage-dark);font-weight:700}
-.greeting{font-family:Georgia,serif;font-size:clamp(27px,3vw,43px);font-weight:400;margin:14px 0 8px}
-.subtitle{color:var(--muted);font-size:14px}
-.dateblock{margin-top:26px;display:flex;gap:10px;align-items:center;font-size:13px;color:#70766b}
-.clockcard{padding:27px 30px;display:flex;flex-direction:column;justify-content:center}
-.clock{font-size:clamp(46px,5vw,70px);font-weight:300;letter-spacing:-.055em;font-variant-numeric:tabular-nums}
-.clockmeta{color:var(--muted);font-size:13px;margin-top:8px}
-.clockline{height:1px;background:var(--line);margin:20px 0 14px}
-.hijri{font-family:Georgia,serif;font-size:17px;color:var(--sage-dark)}
-.grid{display:grid;grid-template-columns:1.25fr .9fr .9fr;gap:18px}
-.section{padding:22px 24px;min-height:270px}
-.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}
-.sectiontitle{font-family:Georgia,serif;font-size:21px;font-weight:400}
-.smalllabel{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.13em}
-.prayerlist{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.prayer{padding:12px 13px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.27);display:flex;justify-content:space-between;align-items:center}
-.prayer.active{background:#e2e8dd;border-color:rgba(100,119,98,.25)}
-.prayername{font-size:13px;font-weight:600}
-.prayertime{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
-.nextbox{margin-top:13px;padding:13px 15px;border-radius:15px;background:#e4e9df;display:flex;justify-content:space-between;align-items:center}
-.nexttitle{font-size:11px;color:var(--sage-dark);text-transform:uppercase;letter-spacing:.1em}
-.nextname{font-size:15px;margin-top:4px;font-weight:600}
-.countdown{font-size:22px;font-variant-numeric:tabular-nums;color:var(--sage-dark)}
-.tasklist{display:flex;flex-direction:column;gap:10px}
-.task{display:flex;align-items:center;gap:10px;font-size:13px;color:#646a60;padding-bottom:9px;border-bottom:1px solid var(--line)}
-.task input{accent-color:var(--sage-dark);width:16px;height:16px}
-.task.done span{text-decoration:line-through;color:#a3a69d}
-.emptyhint{font-size:12px;color:var(--muted);line-height:1.6}
-.addrow{display:flex;gap:7px;margin-top:15px}
-.addrow input{min-width:0;flex:1;border:1px solid var(--line);background:rgba(255,255,255,.45);border-radius:12px;padding:10px 12px;outline:none;color:var(--ink)}
-.addrow button{border:0;background:var(--sage);color:white;border-radius:12px;padding:0 14px}
-.familyitems{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.familyitem{padding:13px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.28)}
-.familyicon{font-size:18px;margin-bottom:8px}
-.familylabel{font-size:12px;font-weight:600}
-.familydesc{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
-.bottom{display:flex;justify-content:space-between;align-items:center;padding:19px 5px 0;color:var(--muted);font-size:11px}
-.bottom strong{font-weight:600;color:var(--sage-dark)}
-.notice{position:fixed;inset:0;background:rgba(46,54,45,.42);display:none;align-items:center;justify-content:center;padding:20px;z-index:5}
-.notice.show{display:flex}
-.noticebox{max-width:460px;width:100%;padding:34px;text-align:center;background:#f3f0e8;border-radius:28px;box-shadow:0 20px 70px rgba(0,0,0,.2)}
-.noticeicon{font-size:34px}
-.noticebox h2{font-family:Georgia,serif;font-size:30px;font-weight:400;margin:13px 0 8px}
-.noticebox p{color:var(--muted);font-size:14px;line-height:1.6}
-.noticebox button{border:0;background:var(--sage-dark);color:#fff;border-radius:22px;padding:11px 22px;margin-top:12px}
-.dialog{position:fixed;inset:0;background:rgba(46,54,45,.38);display:none;align-items:center;justify-content:center;padding:18px;z-index:6}
-.dialog.show{display:flex}
-.dialogbox{width:min(540px,100%);max-height:88vh;overflow:auto;background:#f4f1e9;border-radius:24px;padding:25px;box-shadow:0 20px 70px rgba(0,0,0,.2)}
-.dialoghead{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
-.dialoghead h2{font-family:Georgia,serif;font-weight:400;margin:0}
-.close{border:0;background:transparent;font-size:23px;color:var(--muted)}
-.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
-.field label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-.field input{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
-.save{background:var(--sage-dark);color:#fff;border:0;border-radius:12px;padding:12px 18px;margin-top:8px}
-.hint{font-size:11px;color:var(--muted);line-height:1.5;margin:12px 0}
-@media(max-width:900px){.shell{padding:20px}.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.prayerpanel{grid-column:1/-1}}
-@media(max-width:600px){.grid{grid-template-columns:1fr}.top{align-items:flex-start}.pill{display:none}.shell{padding:15px}.welcome,.clockcard{padding:22px}.section{padding:19px}.bottom{gap:10px;flex-direction:column;align-items:flex-start}}
-@media(min-width:1500px){.shell{padding-top:45px}.section{min-height:300px}}
 </style>
 </head>
 <body>
-<div class="shell">
-  <header class="top">
-    <div class="brand"><div class="mark">⌂</div><div><div class="brandname">RUMAH</div><div class="tagline">A little home, a lot of love</div></div></div>
-    <div class="topright"><div class="pill" id="locationPill">Petaling Jaya · Malaysia</div><button class="settings" id="openSettings">⚙ Settings</button></div>
-  </header>
-
-  <section class="hero">
-    <div class="card welcome">
-      <div class="eyebrow">Your family space</div>
-      <div class="greeting" id="greeting">A lovely day at home.</div>
-      <div class="subtitle">Make today a little kinder, calmer and more intentional.</div>
-      <div class="dateblock"><span>✦</span><span id="dateLong">Loading date…</span></div>
-    </div>
-    <div class="card clockcard">
-      <div class="smalllabel">Local time</div>
-      <div class="clock" id="clock">--:--</div>
-      <div class="clockmeta" id="clockDay">Malaysia time</div>
-      <div class="clockline"></div>
-      <div class="hijri" id="hijri">A day to be grateful</div>
-      <div class="clockmeta">One day at a time.</div>
-    </div>
-  </section>
-
-  <main class="grid">
-    <section class="card section prayerpanel">
-      <div class="sectionhead"><div class="sectiontitle">Prayer times</div><div class="smalllabel" id="prayerDate">Today</div></div>
-      <div class="prayerlist" id="prayerList"></div>
-      <div class="nextbox"><div><div class="nexttitle">Up next</div><div class="nextname" id="nextPrayer">Set prayer times</div></div><div class="countdown" id="countdown">--:--:--</div></div>
-      <div class="hint">Prayer times are editable demo values. Set your local JAKIM zone and today's times in Settings before relying on reminders.</div>
-    </section>
-
-    <section class="card section">
-      <div class="sectionhead"><div class="sectiontitle">Family today</div><div class="smalllabel">Little routines</div></div>
-      <div class="tasklist" id="taskList"></div>
-      <div class="addrow"><input id="taskInput" type="text" placeholder="Add a family reminder"><button id="addTask">+</button></div>
-    </section>
-
-    <section class="card section">
-      <div class="sectionhead"><div class="sectiontitle">Around the home</div><div class="smalllabel">Daily moments</div></div>
-      <div class="familyitems">
-        <div class="familyitem"><div class="familyicon">☀</div><div class="familylabel">Start gently</div><div class="familydesc">Make beds, open curtains, drink water.</div></div>
-        <div class="familyitem"><div class="familyicon">♡</div><div class="familylabel">Kind words</div><div class="familydesc">One thoughtful thing for someone today.</div></div>
-        <div class="familyitem"><div class="familyicon">✿</div><div class="familylabel">Reset together</div><div class="familydesc">Ten-minute tidy before winding down.</div></div>
-        <div class="familyitem"><div class="familyicon">☾</div><div class="familylabel">Slow evenings</div><div class="familydesc">Prepare for tomorrow, then rest.</div></div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="bottom"><span>Made with care for your <strong>Rumah</strong>.</span><span>Family first · Faith always · Keep it simple</span></footer>
+<div class="scene" aria-hidden="true">
+<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#9fc5df"/><stop offset=".68" stop-color="#d8e8ed"/><stop offset="1" stop-color="#e4e8cf"/></linearGradient>
+  <linearGradient id="hill" x2="0" y2="1"><stop stop-color="#c6d6b0"/><stop offset="1" stop-color="#829e7a"/></linearGradient>
+  <linearGradient id="balloon" x2="1" y2="1"><stop stop-color="#f1d7ad"/><stop offset=".48" stop-color="#b9d0d8"/><stop offset="1" stop-color="#e8b77f"/></linearGradient>
+  <filter id="soft"><feGaussianBlur stdDeviation="1.1"/></filter>
+ </defs>
+ <rect width="1600" height="900" fill="url(#sky)"/>
+ <!-- clouds -->
+ <g fill="#edf4f3" stroke="#6f8790" stroke-width="2.2" opacity=".9">
+  <path d="M-40 105 Q5 40 62 79 Q90 13 150 58 Q205 32 233 99 Q282 105 296 145 L-20 150Z"/>
+  <path d="M1290 115 Q1335 65 1380 93 Q1424 28 1485 75 Q1542 40 1580 104 Q1630 105 1650 151 L1280 156Z"/>
+  <path d="M-30 335 Q10 275 54 308 Q83 247 133 290 Q180 271 201 324 L-30 365Z"/>
+ </g>
+ <g fill="none" stroke="#8096a0" stroke-width="2" opacity=".65">
+  <path d="M-10 110q40-55 84-7q35-43 73-4M1315 115q42-50 81-4q39-44 81-1q43-35 83 7M5 326q37-42 70-4q34-35 67-1"/>
+ </g>
+ <!-- hot air balloon -->
+ <g transform="translate(790 70)" stroke="#344b59" stroke-width="3" stroke-linejoin="round">
+  <path d="M0 0 C-118 0 -157 106 -126 193 C-105 254 -46 285 0 298 C46 285 105 254 126 193 C157 106 118 0 0 0Z" fill="url(#balloon)"/>
+  <path d="M0 0V298M-62 14Q-103 91-91 178Q-75 248-31 284M62 14Q103 91 91 178Q75 248 31 284" fill="none" opacity=".75"/>
+  <path d="M-125 143Q0 176 125 143M-105 222Q0 255 105 222" fill="none" opacity=".55"/>
+  <path d="M-32 288L-24 325M32 288L24 325" fill="none"/>
+  <path d="M-25 324Q0 314 25 324L20 352H-20Z" fill="#c79a69"/>
+  <path d="M-20 334H20M-15 345H15" fill="none" opacity=".6"/>
+ </g>
+ <!-- birds -->
+ <g fill="none" stroke="#334b57" stroke-width="3" stroke-linecap="round"><path d="M430 170q18-18 36 0q18-18 36 0M1080 118q15-15 30 0q15-15 30 0M1190 230q12-12 24 0q12-12 24 0"/></g>
+ <!-- hills -->
+ <path d="M0 650Q170 530 330 620T670 605T1010 620T1320 560T1600 620V900H0Z" fill="#a8c39c" stroke="#607f6d" stroke-width="3"/>
+ <path d="M0 715Q190 600 380 690T760 670T1110 690T1450 650T1600 680V900H0Z" fill="url(#hill)" stroke="#5e7b66" stroke-width="3"/>
+ <path d="M0 790Q240 680 440 770T850 750T1230 760T1600 735V900H0Z" fill="#d2dba9" stroke="#718a65" stroke-width="3"/>
+ <g fill="none" stroke="#6f8b69" stroke-width="2" opacity=".65">
+  <path d="M80 770q90-65 170-20M250 820q95-72 190-25M800 805q100-65 180-22M1160 780q90-60 170-20M1370 850q80-55 145-18"/>
+ </g>
+ <!-- houses -->
+ <g stroke="#40545a" stroke-width="3" stroke-linejoin="round">
+  <g transform="translate(65 630)"><path d="M0 62L72 0l79 62v100H0Z" fill="#f1e6cf"/><path d="M-12 66L72 -8l92 74" fill="#c77f65"/><rect x="58" y="100" width="32" height="62" fill="#9d795d"/><rect x="17" y="83" width="27" height="27" fill="#b8d4dd"/><rect x="110" y="83" width="25" height="27" fill="#b8d4dd"/></g>
+  <g transform="translate(1290 650) scale(1.12)"><path d="M0 62L72 0l79 62v100H0Z" fill="#f0e5ce"/><path d="M-12 66L72 -8l92 74" fill="#c77f65"/><rect x="58" y="100" width="32" height="62" fill="#9d795d"/><rect x="17" y="83" width="27" height="27" fill="#b8d4dd"/><rect x="110" y="83" width="25" height="27" fill="#b8d4dd"/></g>
+  <g transform="translate(360 710) scale(.68)"><path d="M0 62L72 0l79 62v100H0Z" fill="#eee2c9"/><path d="M-12 66L72 -8l92 74" fill="#c77f65"/><rect x="58" y="100" width="32" height="62" fill="#9d795d"/><rect x="17" y="83" width="27" height="27" fill="#b8d4dd"/><rect x="110" y="83" width="25" height="27" fill="#b8d4dd"/></g>
+  <g transform="translate(1090 720) scale(.62)"><path d="M0 62L72 0l79 62v100H0Z" fill="#eee2c9"/><path d="M-12 66L72 -8l92 74" fill="#c77f65"/><rect x="58" y="100" width="32" height="62" fill="#9d795d"/><rect x="17" y="83" width="27" height="27" fill="#b8d4dd"/><rect x="110" y="83" width="25" height="27" fill="#b8d4dd"/></g>
+ </g>
+ <!-- sketch trees -->
+ <g stroke="#435d50" stroke-width="3">
+  <g fill="#8eae7d"><circle cx="35" cy="650" r="65"/><circle cx="88" cy="610" r="58"/><circle cx="140" cy="650" r="55"/><circle cx="1500" cy="640" r="70"/><circle cx="1550" cy="590" r="58"/></g>
+  <g fill="none"><path d="M88 655v100M1500 645v110M55 635q25-20 50 0M1465 630q35-25 65 0"/></g>
+ </g>
+</svg>
 </div>
+<div class="scrim"></div>
+<div class="ui">
+ <section class="top">
+  <div class="dateblock">
+   <div class="date" id="date">Monday, 2 November 2026</div>
+   <div class="hijri" id="hijri">Islamic date</div>
+   <div class="clockrow"><div class="clock" id="clock">9:41</div><div class="ampm" id="ampm">AM</div></div>
+  </div>
+  <div class="next" aria-live="polite">
+   <div><div class="nextlabel">Next Prayer</div><div class="nextname" id="nextName">Loading</div></div>
+   <div class="nextdivider"></div>
+   <div><div class="count" id="countdown">--:--:--</div><div class="countcaption">HOURS · MINUTES · SECONDS</div></div>
+  </div>
+ </section>
 
-<div class="notice" id="prayerNotice"><div class="noticebox"><div class="noticeicon">☾</div><h2 id="noticeTitle">It's prayer time</h2><p id="noticeText">Take a moment to pause and pray.</p><button id="dismissNotice">Alhamdulillah</button></div></div>
+ <section class="timelinewrap" aria-label="Prayer timeline from 5 AM to 2 AM">
+  <div class="timeline" id="timeline">
+   <div class="track"></div><div class="progress" id="progress"></div>
+   <div id="ticks"></div><div id="markers"></div>
+  </div>
+ </section>
 
-<div class="dialog" id="settingsDialog"><div class="dialogbox">
-  <div class="dialoghead"><h2>Dashboard settings</h2><button class="close" id="closeSettings">×</button></div>
-  <div class="field"><label>Location label</label><input id="locationInput" value="Petaling Jaya · Malaysia"></div>
-  <div class="smalllabel" style="margin:15px 0 10px">Today's prayer times (24-hour format)</div>
-  <div class="formgrid" id="prayerFields"></div>
-  <p class="hint">These are demonstration settings, not verified prayer timings. Enter the official times for your JAKIM zone. This first version checks prayer times while the dashboard page is open.</p>
-  <button class="save" id="saveSettings">Save settings</button>
-</div></div>
-
+ <nav class="apps" aria-label="TV apps">
+  <button class="app" type="button" data-app="tv" aria-label="TV">
+   <svg viewBox="0 0 48 48"><rect x="6" y="9" width="36" height="26" rx="3"/><path d="M18 42h12M24 35v7"/></svg><span class="applabel">TV</span>
+  </button>
+  <a class="app youtube" href="https://www.youtube.com/tv" target="_blank" rel="noopener" aria-label="YouTube">
+   <svg viewBox="0 0 48 48"><rect class="play" x="4" y="9" width="40" height="30" rx="9"/><path class="playtri" d="M20 16l13 8-13 8z"/></svg><span class="applabel">YouTube</span>
+  </a>
+  <a class="app netflix" href="https://www.netflix.com" target="_blank" rel="noopener" aria-label="Netflix">
+   <span class="n">N</span><span class="applabel">Netflix</span>
+  </a>
+  <a class="app" href="https://www.google.com" target="_blank" rel="noopener" aria-label="Browser">
+   <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="19"/><path d="M5 24h38M24 5c7 7 10 13 10 19s-3 12-10 19M24 5c-7 7-10 13-10 19s3 12 10 19M9 13h30M9 35h30"/></svg><span class="applabel">Browser</span>
+  </a>
+  <button class="app" type="button" data-app="others" aria-label="Others">
+   <svg viewBox="0 0 48 48"><rect x="7" y="7" width="13" height="13" rx="3"/><rect x="28" y="7" width="13" height="13" rx="3"/><rect x="7" y="28" width="13" height="13" rx="3"/><rect x="28" y="28" width="13" height="13" rx="3"/></svg><span class="applabel">Others</span>
+  </button>
+ </nav>
+ <footer class="footer"><span>RUMAH</span><span>Desa Petaling · Kuala Lumpur · WLY01</span></footer>
+</div>
+<div class="status" id="status"></div>
+<div class="modal" id="modal"><div class="modalbox"><h2 id="modalTitle">TV</h2><p id="modalText"></p><div class="modalactions"><button id="modalClose">Close</button></div></div></div>
 <script>
 (function(){
-  const names=["Subuh","Syuruk","Zohor","Asar","Maghrib","Isyak"];
-  const defaults={Subuh:"05:55",Syuruk:"07:05",Zohor:"13:05",Asar:"16:25",Maghrib:"19:05",Isyak:"20:15"};
-  let config=load("rumah-config", {location:"Petaling Jaya · Malaysia",times:defaults});
-  let tasks=load("rumah-tasks",["Kemas katil","Baca / ulang kaji bersama anak-anak","Sediakan beg sekolah","10-minute family tidy"]);
-  let notifiedKey="";
-  const $=id=>document.getElementById(id);
-  function load(k,f){try{return JSON.parse(localStorage.getItem(k))||f}catch(e){return f}}
-  function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-  function dateKey(d){return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
-  function parseTime(s){const m=/^([01]\d|2[0-3]):([0-5]\d)$/.exec(s||"");return m?Number(m[1])*60+Number(m[2]):-1}
-  function renderPrayers(){
-    $("prayerList").innerHTML="";
-    names.forEach(n=>{
-      const el=document.createElement("div");el.className="prayer";el.id="p-"+n;
-      el.innerHTML='<span class="prayername">'+n+'</span><span class="prayertime">'+(config.times[n]||"--:--")+'</span>';
-      $("prayerList").appendChild(el);
-    });
+"use strict";
+const ZONE="WLY01";
+const PRAYERS=[["Subuh","fajr"],["Zohor","dhuhr"],["Asar","asr"],["Maghrib","maghrib"],["Isyak","isha"]];
+const $=id=>document.getElementById(id);
+let times=null, lastDate="", statusTimer=null;
+function showStatus(message){const el=$("status");el.textContent=message;el.classList.add("show");clearTimeout(statusTimer);statusTimer=setTimeout(()=>el.classList.remove("show"),3500)}
+function dateKey(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function parseTime(value){if(!value)return null;const m=String(value).match(/(\\d{1,2}):(\\d{2})/);return m?Number(m[1])*60+Number(m[2]):null}
+function fmt12(mins){let h=Math.floor(mins/60)%24,m=mins%60;return ((h%12)||12)+":"+String(m).padStart(2,"0")+" "+(h>=12?"PM":"AM")}
+function localTime(d){let h=d.getHours(),m=d.getMinutes();return ((h%12)||12)+":"+String(m).padStart(2,"0")}
+function getPrayerDay(data,d){
+ const arr=data && data.prayerTime;
+ if(!Array.isArray(arr))return null;
+ const target=dateKey(d);
+ return arr.find(x=>{
+  const raw=String(x.date||"");
+  const parsed=new Date(raw);
+  return raw===target || (!isNaN(parsed.getTime()) && dateKey(parsed)===target);
+ }) || arr[0] || null;
+}
+async function loadPrayerTimes(){
+ const now=new Date(), today=dateKey(now);
+ try{
+  const url="https://www.e-solat.gov.my/index.php?r=esolatApi/takwimsolat&period=week&zone="+ZONE;
+  const response=await fetch(url,{cache:"no-store"});
+  if(!response.ok)throw new Error("JAKIM returned "+response.status);
+  const data=await response.json(), day=getPrayerDay(data,now);
+  if(!day)throw new Error("Prayer data unavailable");
+  const next={};
+  PRAYERS.forEach(([label,key])=>{next[label]=parseTime(day[key])});
+  next.Syuruk=parseTime(day.syuruk);
+  if(PRAYERS.some(([label])=>next[label]===null))throw new Error("Incomplete prayer data");
+  times=next;lastDate=today;renderTimeline();tick();
+  showStatus("Prayer times updated from JAKIM · WLY01");
+ }catch(err){
+  showStatus("Could not load JAKIM timings. Check internet or refresh.");
+  $("nextName").textContent="Prayer data unavailable";
+ }
+}
+function renderTimeline(){
+ const start=5*60,end=26*60,span=end-start;
+ const ticks=$("ticks"),markers=$("markers");ticks.innerHTML="";markers.innerHTML="";
+ for(let t=start;t<=end;t+=30){
+  const x=(t-start)/span*100;
+  const tick=document.createElement("div");tick.className="tick";tick.style.left=x+"%";ticks.appendChild(tick);
+  if(t%120===0 || t===end){
+   const label=document.createElement("div");label.className="ticklabel";label.style.left=x+"%";
+   const hour=(Math.floor(t/60)%24),ampm=hour>=12?"PM":"AM";
+   label.textContent=((hour%12)||12)+(t===end?" AM":" "+ampm);ticks.appendChild(label);
   }
-  function renderTasks(){
-    $("taskList").innerHTML="";
-    tasks.forEach((t,i)=>{
-      const row=document.createElement("label");row.className="task";
-      row.innerHTML='<input type="checkbox"><span></span>';
-      row.querySelector("span").textContent=t;
-      row.querySelector("input").addEventListener("change",e=>row.classList.toggle("done",e.target.checked));
-      $("taskList").appendChild(row);
-    });
-  }
-  function update(){
-    const d=new Date(), h=d.getHours(), mins=d.getMinutes(), now=h*60+mins;
-    $("clock").textContent=d.toLocaleTimeString("en-MY",{hour:"2-digit",minute:"2-digit",hour12:true});
-    $("clockDay").textContent=d.toLocaleTimeString("en-MY",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · Malaysia time";
-    $("dateLong").textContent=d.toLocaleDateString("en-MY",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-    $("prayerDate").textContent=d.toLocaleDateString("en-MY",{day:"numeric",month:"short"});
-    $("greeting").textContent=h<12?"Good morning, family.":h<18?"A lovely afternoon at home.":"Good evening, everyone.";
-    try{$("hijri").textContent=new Intl.DateTimeFormat("en-TN-u-ca-islamic", {day:"numeric",month:"long",year:"numeric"}).format(d)}catch(e){$("hijri").textContent="A day to be grateful"}
-    $("locationPill").textContent=config.location;
-    let upcoming=null, upcomingMin=99999;
-    names.forEach(n=>{
-      const t=parseTime(config.times[n]);const el=$("p-"+n);
-      if(el)el.classList.remove("active");
-      if(t>=0 && t>now && t<upcomingMin){upcoming={name:n,time:t};upcomingMin=t}
-    });
-    if(!upcoming){
-      const tomorrow=new Date(d);tomorrow.setDate(d.getDate()+1);
-      const t=parseTime(config.times.Subuh);
-      if(t>=0){upcoming={name:"Subuh",time:t+1440};upcomingMin=t+1440}
-    }
-    if(upcoming){
-      const diff=upcomingMin-now;
-      $("nextPrayer").textContent=upcoming.name+" · "+(config.times[upcoming.name]||"");
-      $("countdown").textContent=String(Math.floor(diff/60)).padStart(2,"0")+":"+String(diff%60).padStart(2,"0")+":00";
-      const active=names.filter(n=>parseTime(config.times[n])>=0 && parseTime(config.times[n])<=now).pop();
-      if(active && $("p-"+active))$("p-"+active).classList.add("active");
-      names.forEach(n=>{
-        const t=parseTime(config.times[n]);
-        if(t>=0 && now===t){
-          const key=dateKey(d)+"-"+n;
-          if(notifiedKey!==key){notifiedKey=key;$("noticeTitle").textContent="It's "+n+" time";$("noticeText").textContent="Pause for a moment. It's time for "+n+" prayer.";$("prayerNotice").classList.add("show")}
-        }
-      });
-    }else{$("nextPrayer").textContent="Add prayer times";$("countdown").textContent="--:--:--"}
-  }
-  function openSettings(){
-    $("locationInput").value=config.location;
-    $("prayerFields").innerHTML="";
-    names.forEach(n=>{
-      const div=document.createElement("div");div.className="field";
-      const label=document.createElement("label");label.textContent=n;
-      const input=document.createElement("input");input.type="time";input.id="time-"+n;input.value=config.times[n]||"";
-      div.appendChild(label);div.appendChild(input);$("prayerFields").appendChild(div);
-    });
-    $("settingsDialog").classList.add("show");
-  }
-  $("openSettings").addEventListener("click",openSettings);
-  $("closeSettings").addEventListener("click",()=>$("settingsDialog").classList.remove("show"));
-  $("saveSettings").addEventListener("click",()=>{
-    config.location=$("locationInput").value.trim()||"My home";
-    names.forEach(n=>config.times[n]=$("time-"+n).value||"");
-    save("rumah-config",config);renderPrayers();update();$("settingsDialog").classList.remove("show");
-  });
-  $("addTask").addEventListener("click",()=>{
-    const v=$("taskInput").value.trim();if(!v)return;
-    tasks.push(v);save("rumah-tasks",tasks);renderTasks();$("taskInput").value="";
-  });
-  $("taskInput").addEventListener("keydown",e=>{if(e.key==="Enter")$("addTask").click()});
-  $("dismissNotice").addEventListener("click",()=>$("prayerNotice").classList.remove("show"));
-  renderPrayers();renderTasks();update();setInterval(update,1000);
+ }
+ const now=new Date(),nowMin=now.getHours()*60+now.getMinutes(),adjustedNow=nowMin<start?nowMin+1440:nowMin;
+ const progress=Math.max(0,Math.min(100,(adjustedNow-start)/span*100));$("progress").style.width=progress+"%";
+ const all=[["Subuh",times.Subuh],["Syuruk",times.Syuruk],["Zohor",times.Zohor],["Asar",times.Asar],["Maghrib",times.Maghrib],["Isyak",times.Isyak]];
+ let upcomingName=null,upcomingTime=null;
+ for(const [name,t] of all){if(t!==null && t>nowMin && (name!=="Syuruk")){upcomingName=name;upcomingTime=t;break}}
+ if(!upcomingName){upcomingName="Subuh";upcomingTime=times.Subuh+1440}
+ all.forEach(([name,t])=>{
+  if(t===null)return;
+  const x=(t-start)/span*100;
+  const marker=document.createElement("div");marker.className="prayermarker"+(name===upcomingName?" nextmarker":"");marker.style.left=x+"%";
+  const dot=document.createElement("div");dot.className="dot";
+  const nm=document.createElement("div");nm.className="pname";nm.textContent=name;
+  const tm=document.createElement("div");tm.className="ptime";tm.textContent=fmt12(t);
+  marker.append(dot,nm,tm);markers.appendChild(marker);
+ });
+ $("nextName").textContent=upcomingName;
+}
+function tick(){
+ const d=new Date(),today=dateKey(d);
+ $("clock").textContent=localTime(d);$("ampm").textContent=d.getHours()>=12?"PM":"AM";
+ $("date").textContent=d.toLocaleDateString("en-MY",{weekday:"short",day:"numeric",month:"short",year:"numeric"});
+ try{$("hijri").textContent=new Intl.DateTimeFormat("en-TN-u-ca-islamic",{day:"numeric",month:"long",year:"numeric"}).format(d)+"H"}catch(e){$("hijri").textContent=""}
+ if(today!==lastDate){loadPrayerTimes();return}
+ if(!times)return;
+ const now=d.getHours()*60+d.getMinutes(),sec=d.getSeconds();
+ let next=null,nextAt=null;
+ for(const [name] of PRAYERS){const t=times[name];if(t>now){next=name;nextAt=t;break}}
+ if(!next){next="Subuh";nextAt=times.Subuh+1440}
+ $("nextName").textContent=next;
+ let diff=(nextAt-now)*60-sec;if(diff<0)diff=0;
+ const hh=Math.floor(diff/3600),mm=Math.floor(diff%3600/60),ss=diff%60;
+ $("countdown").textContent=[hh,mm,ss].map(v=>String(v).padStart(2,"0")).join(":");
+ const progressNow=Math.max(0,Math.min(100,((now<300?now+1440:now)-300)/(1560-300)*100));
+ $("progress").style.width=progressNow+"%";
+}
+function modal(title,text){$("modalTitle").textContent=title;$("modalText").textContent=text;$("modal").classList.add("show")}
+$("modalClose").addEventListener("click",()=>$("modal").classList.remove("show"));
+document.querySelector('[data-app="tv"]').addEventListener("click",()=>modal("TV","Use your Hisense remote to switch to Live TV. A browser page cannot directly change the television input."));
+document.querySelector('[data-app="others"]').addEventListener("click",()=>modal("More apps","Add your favourite app links here in a future update. You can also use the TV's Home screen to open installed VIDAA apps."));
+loadPrayerTimes();tick();setInterval(tick,1000);setInterval(loadPrayerTimes,6*60*60*1000);
 })();
 </script>
-</body>
-</html>
+</body></html>
