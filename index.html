@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#eeeae1">
+<title>Rumah — Family Dashboard</title>
+<style>
+:root{
+  --bg:#eeeae1; --paper:rgba(255,255,255,.58); --paper2:rgba(255,255,255,.38);
+  --ink:#343a34; --muted:#85877e; --sage:#879783; --sage-dark:#647762;
+  --line:rgba(75,84,70,.12); --shadow:0 12px 36px rgba(73,75,62,.07);
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg)}
+body{
+  min-height:100vh; overflow-x:hidden;
+  background:
+    radial-gradient(ellipse at 8% 5%,rgba(255,255,255,.72),transparent 36%),
+    radial-gradient(ellipse at 92% 92%,rgba(170,183,158,.24),transparent 34%),
+    linear-gradient(135deg,#f1eee7,#e8e5db);
+}
+.shell{max-width:1600px;margin:auto;padding:34px 42px 28px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:42px;height:42px;border-radius:14px;background:#dce3d6;display:grid;place-items:center;color:var(--sage-dark);font-size:21px}
+.brandname{font-size:19px;letter-spacing:.16em;font-weight:700}
+.tagline{font-size:10px;color:var(--muted);letter-spacing:.16em;margin-top:4px;text-transform:uppercase}
+.topright{display:flex;gap:10px;align-items:center}
+.pill{border:1px solid var(--line);background:var(--paper2);border-radius:30px;padding:9px 14px;font-size:12px;color:var(--muted)}
+button{font:inherit;cursor:pointer}
+.settings{border:1px solid var(--line);background:var(--paper);border-radius:30px;padding:10px 15px;color:var(--ink)}
+.hero{display:grid;grid-template-columns:1.45fr .85fr;gap:18px;margin-bottom:18px}
+.card{background:var(--paper);border:1px solid rgba(255,255,255,.72);border-radius:24px;box-shadow:var(--shadow);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.welcome{padding:30px 34px;position:relative;overflow:hidden;min-height:210px}
+.welcome:after{content:"";position:absolute;width:230px;height:230px;border:1px solid rgba(135,151,131,.18);border-radius:50%;right:-55px;top:-95px;box-shadow:0 0 0 24px rgba(135,151,131,.035),0 0 0 50px rgba(135,151,131,.025)}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:var(--sage-dark);font-weight:700}
+.greeting{font-family:Georgia,serif;font-size:clamp(27px,3vw,43px);font-weight:400;margin:14px 0 8px}
+.subtitle{color:var(--muted);font-size:14px}
+.dateblock{margin-top:26px;display:flex;gap:10px;align-items:center;font-size:13px;color:#70766b}
+.clockcard{padding:27px 30px;display:flex;flex-direction:column;justify-content:center}
+.clock{font-size:clamp(46px,5vw,70px);font-weight:300;letter-spacing:-.055em;font-variant-numeric:tabular-nums}
+.clockmeta{color:var(--muted);font-size:13px;margin-top:8px}
+.clockline{height:1px;background:var(--line);margin:20px 0 14px}
+.hijri{font-family:Georgia,serif;font-size:17px;color:var(--sage-dark)}
+.grid{display:grid;grid-template-columns:1.25fr .9fr .9fr;gap:18px}
+.section{padding:22px 24px;min-height:270px}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}
+.sectiontitle{font-family:Georgia,serif;font-size:21px;font-weight:400}
+.smalllabel{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.13em}
+.prayerlist{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.prayer{padding:12px 13px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.27);display:flex;justify-content:space-between;align-items:center}
+.prayer.active{background:#e2e8dd;border-color:rgba(100,119,98,.25)}
+.prayername{font-size:13px;font-weight:600}
+.prayertime{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.nextbox{margin-top:13px;padding:13px 15px;border-radius:15px;background:#e4e9df;display:flex;justify-content:space-between;align-items:center}
+.nexttitle{font-size:11px;color:var(--sage-dark);text-transform:uppercase;letter-spacing:.1em}
+.nextname{font-size:15px;margin-top:4px;font-weight:600}
+.countdown{font-size:22px;font-variant-numeric:tabular-nums;color:var(--sage-dark)}
+.tasklist{display:flex;flex-direction:column;gap:10px}
+.task{display:flex;align-items:center;gap:10px;font-size:13px;color:#646a60;padding-bottom:9px;border-bottom:1px solid var(--line)}
+.task input{accent-color:var(--sage-dark);width:16px;height:16px}
+.task.done span{text-decoration:line-through;color:#a3a69d}
+.emptyhint{font-size:12px;color:var(--muted);line-height:1.6}
+.addrow{display:flex;gap:7px;margin-top:15px}
+.addrow input{min-width:0;flex:1;border:1px solid var(--line);background:rgba(255,255,255,.45);border-radius:12px;padding:10px 12px;outline:none;color:var(--ink)}
+.addrow button{border:0;background:var(--sage);color:white;border-radius:12px;padding:0 14px}
+.familyitems{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.familyitem{padding:13px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.28)}
+.familyicon{font-size:18px;margin-bottom:8px}
+.familylabel{font-size:12px;font-weight:600}
+.familydesc{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
+.bottom{display:flex;justify-content:space-between;align-items:center;padding:19px 5px 0;color:var(--muted);font-size:11px}
+.bottom strong{font-weight:600;color:var(--sage-dark)}
+.notice{position:fixed;inset:0;background:rgba(46,54,45,.42);display:none;align-items:center;justify-content:center;padding:20px;z-index:5}
+.notice.show{display:flex}
+.noticebox{max-width:460px;width:100%;padding:34px;text-align:center;background:#f3f0e8;border-radius:28px;box-shadow:0 20px 70px rgba(0,0,0,.2)}
+.noticeicon{font-size:34px}
+.noticebox h2{font-family:Georgia,serif;font-size:30px;font-weight:400;margin:13px 0 8px}
+.noticebox p{color:var(--muted);font-size:14px;line-height:1.6}
+.noticebox button{border:0;background:var(--sage-dark);color:#fff;border-radius:22px;padding:11px 22px;margin-top:12px}
+.dialog{position:fixed;inset:0;background:rgba(46,54,45,.38);display:none;align-items:center;justify-content:center;padding:18px;z-index:6}
+.dialog.show{display:flex}
+.dialogbox{width:min(540px,100%);max-height:88vh;overflow:auto;background:#f4f1e9;border-radius:24px;padding:25px;box-shadow:0 20px 70px rgba(0,0,0,.2)}
+.dialoghead{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.dialoghead h2{font-family:Georgia,serif;font-weight:400;margin:0}
+.close{border:0;background:transparent;font-size:23px;color:var(--muted)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.field label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.field input{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.save{background:var(--sage-dark);color:#fff;border:0;border-radius:12px;padding:12px 18px;margin-top:8px}
+.hint{font-size:11px;color:var(--muted);line-height:1.5;margin:12px 0}
+@media(max-width:900px){.shell{padding:20px}.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.prayerpanel{grid-column:1/-1}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.top{align-items:flex-start}.pill{display:none}.shell{padding:15px}.welcome,.clockcard{padding:22px}.section{padding:19px}.bottom{gap:10px;flex-direction:column;align-items:flex-start}}
+@media(min-width:1500px){.shell{padding-top:45px}.section{min-height:300px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <div class="brand"><div class="mark">⌂</div><div><div class="brandname">RUMAH</div><div class="tagline">A little home, a lot of love</div></div></div>
+    <div class="topright"><div class="pill" id="locationPill">Petaling Jaya · Malaysia</div><button class="settings" id="openSettings">⚙ Settings</button></div>
+  </header>
+
+  <section class="hero">
+    <div class="card welcome">
+      <div class="eyebrow">Your family space</div>
+      <div class="greeting" id="greeting">A lovely day at home.</div>
+      <div class="subtitle">Make today a little kinder, calmer and more intentional.</div>
+      <div class="dateblock"><span>✦</span><span id="dateLong">Loading date…</span></div>
+    </div>
+    <div class="card clockcard">
+      <div class="smalllabel">Local time</div>
+      <div class="clock" id="clock">--:--</div>
+      <div class="clockmeta" id="clockDay">Malaysia time</div>
+      <div class="clockline"></div>
+      <div class="hijri" id="hijri">A day to be grateful</div>
+      <div class="clockmeta">One day at a time.</div>
+    </div>
+  </section>
+
+  <main class="grid">
+    <section class="card section prayerpanel">
+      <div class="sectionhead"><div class="sectiontitle">Prayer times</div><div class="smalllabel" id="prayerDate">Today</div></div>
+      <div class="prayerlist" id="prayerList"></div>
+      <div class="nextbox"><div><div class="nexttitle">Up next</div><div class="nextname" id="nextPrayer">Set prayer times</div></div><div class="countdown" id="countdown">--:--:--</div></div>
+      <div class="hint">Prayer times are editable demo values. Set your local JAKIM zone and today's times in Settings before relying on reminders.</div>
+    </section>
+
+    <section class="card section">
+      <div class="sectionhead"><div class="sectiontitle">Family today</div><div class="smalllabel">Little routines</div></div>
+      <div class="tasklist" id="taskList"></div>
+      <div class="addrow"><input id="taskInput" type="text" placeholder="Add a family reminder"><button id="addTask">+</button></div>
+    </section>
+
+    <section class="card section">
+      <div class="sectionhead"><div class="sectiontitle">Around the home</div><div class="smalllabel">Daily moments</div></div>
+      <div class="familyitems">
+        <div class="familyitem"><div class="familyicon">☀</div><div class="familylabel">Start gently</div><div class="familydesc">Make beds, open curtains, drink water.</div></div>
+        <div class="familyitem"><div class="familyicon">♡</div><div class="familylabel">Kind words</div><div class="familydesc">One thoughtful thing for someone today.</div></div>
+        <div class="familyitem"><div class="familyicon">✿</div><div class="familylabel">Reset together</div><div class="familydesc">Ten-minute tidy before winding down.</div></div>
+        <div class="familyitem"><div class="familyicon">☾</div><div class="familylabel">Slow evenings</div><div class="familydesc">Prepare for tomorrow, then rest.</div></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bottom"><span>Made with care for your <strong>Rumah</strong>.</span><span>Family first · Faith always · Keep it simple</span></footer>
+</div>
+
+<div class="notice" id="prayerNotice"><div class="noticebox"><div class="noticeicon">☾</div><h2 id="noticeTitle">It's prayer time</h2><p id="noticeText">Take a moment to pause and pray.</p><button id="dismissNotice">Alhamdulillah</button></div></div>
+
+<div class="dialog" id="settingsDialog"><div class="dialogbox">
+  <div class="dialoghead"><h2>Dashboard settings</h2><button class="close" id="closeSettings">×</button></div>
+  <div class="field"><label>Location label</label><input id="locationInput" value="Petaling Jaya · Malaysia"></div>
+  <div class="smalllabel" style="margin:15px 0 10px">Today's prayer times (24-hour format)</div>
+  <div class="formgrid" id="prayerFields"></div>
+  <p class="hint">These are demonstration settings, not verified prayer timings. Enter the official times for your JAKIM zone. This first version checks prayer times while the dashboard page is open.</p>
+  <button class="save" id="saveSettings">Save settings</button>
+</div></div>
+
+<script>
+(function(){
+  const names=["Subuh","Syuruk","Zohor","Asar","Maghrib","Isyak"];
+  const defaults={Subuh:"05:55",Syuruk:"07:05",Zohor:"13:05",Asar:"16:25",Maghrib:"19:05",Isyak:"20:15"};
+  let config=load("rumah-config", {location:"Petaling Jaya · Malaysia",times:defaults});
+  let tasks=load("rumah-tasks",["Kemas katil","Baca / ulang kaji bersama anak-anak","Sediakan beg sekolah","10-minute family tidy"]);
+  let notifiedKey="";
+  const $=id=>document.getElementById(id);
+  function load(k,f){try{return JSON.parse(localStorage.getItem(k))||f}catch(e){return f}}
+  function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+  function dateKey(d){return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
+  function parseTime(s){const m=/^([01]\d|2[0-3]):([0-5]\d)$/.exec(s||"");return m?Number(m[1])*60+Number(m[2]):-1}
+  function renderPrayers(){
+    $("prayerList").innerHTML="";
+    names.forEach(n=>{
+      const el=document.createElement("div");el.className="prayer";el.id="p-"+n;
+      el.innerHTML='<span class="prayername">'+n+'</span><span class="prayertime">'+(config.times[n]||"--:--")+'</span>';
+      $("prayerList").appendChild(el);
+    });
+  }
+  function renderTasks(){
+    $("taskList").innerHTML="";
+    tasks.forEach((t,i)=>{
+      const row=document.createElement("label");row.className="task";
+      row.innerHTML='<input type="checkbox"><span></span>';
+      row.querySelector("span").textContent=t;
+      row.querySelector("input").addEventListener("change",e=>row.classList.toggle("done",e.target.checked));
+      $("taskList").appendChild(row);
+    });
+  }
+  function update(){
+    const d=new Date(), h=d.getHours(), mins=d.getMinutes(), now=h*60+mins;
+    $("clock").textContent=d.toLocaleTimeString("en-MY",{hour:"2-digit",minute:"2-digit",hour12:true});
+    $("clockDay").textContent=d.toLocaleTimeString("en-MY",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · Malaysia time";
+    $("dateLong").textContent=d.toLocaleDateString("en-MY",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+    $("prayerDate").textContent=d.toLocaleDateString("en-MY",{day:"numeric",month:"short"});
+    $("greeting").textContent=h<12?"Good morning, family.":h<18?"A lovely afternoon at home.":"Good evening, everyone.";
+    try{$("hijri").textContent=new Intl.DateTimeFormat("en-TN-u-ca-islamic", {day:"numeric",month:"long",year:"numeric"}).format(d)}catch(e){$("hijri").textContent="A day to be grateful"}
+    $("locationPill").textContent=config.location;
+    let upcoming=null, upcomingMin=99999;
+    names.forEach(n=>{
+      const t=parseTime(config.times[n]);const el=$("p-"+n);
+      if(el)el.classList.remove("active");
+      if(t>=0 && t>now && t<upcomingMin){upcoming={name:n,time:t};upcomingMin=t}
+    });
+    if(!upcoming){
+      const tomorrow=new Date(d);tomorrow.setDate(d.getDate()+1);
+      const t=parseTime(config.times.Subuh);
+      if(t>=0){upcoming={name:"Subuh",time:t+1440};upcomingMin=t+1440}
+    }
+    if(upcoming){
+      const diff=upcomingMin-now;
+      $("nextPrayer").textContent=upcoming.name+" · "+(config.times[upcoming.name]||"");
+      $("countdown").textContent=String(Math.floor(diff/60)).padStart(2,"0")+":"+String(diff%60).padStart(2,"0")+":00";
+      const active=names.filter(n=>parseTime(config.times[n])>=0 && parseTime(config.times[n])<=now).pop();
+      if(active && $("p-"+active))$("p-"+active).classList.add("active");
+      names.forEach(n=>{
+        const t=parseTime(config.times[n]);
+        if(t>=0 && now===t){
+          const key=dateKey(d)+"-"+n;
+          if(notifiedKey!==key){notifiedKey=key;$("noticeTitle").textContent="It's "+n+" time";$("noticeText").textContent="Pause for a moment. It's time for "+n+" prayer.";$("prayerNotice").classList.add("show")}
+        }
+      });
+    }else{$("nextPrayer").textContent="Add prayer times";$("countdown").textContent="--:--:--"}
+  }
+  function openSettings(){
+    $("locationInput").value=config.location;
+    $("prayerFields").innerHTML="";
+    names.forEach(n=>{
+      const div=document.createElement("div");div.className="field";
+      const label=document.createElement("label");label.textContent=n;
+      const input=document.createElement("input");input.type="time";input.id="time-"+n;input.value=config.times[n]||"";
+      div.appendChild(label);div.appendChild(input);$("prayerFields").appendChild(div);
+    });
+    $("settingsDialog").classList.add("show");
+  }
+  $("openSettings").addEventListener("click",openSettings);
+  $("closeSettings").addEventListener("click",()=>$("settingsDialog").classList.remove("show"));
+  $("saveSettings").addEventListener("click",()=>{
+    config.location=$("locationInput").value.trim()||"My home";
+    names.forEach(n=>config.times[n]=$("time-"+n).value||"");
+    save("rumah-config",config);renderPrayers();update();$("settingsDialog").classList.remove("show");
+  });
+  $("addTask").addEventListener("click",()=>{
+    const v=$("taskInput").value.trim();if(!v)return;
+    tasks.push(v);save("rumah-tasks",tasks);renderTasks();$("taskInput").value="";
+  });
+  $("taskInput").addEventListener("keydown",e=>{if(e.key==="Enter")$("addTask").click()});
+  $("dismissNotice").addEventListener("click",()=>$("prayerNotice").classList.remove("show"));
+  renderPrayers();renderTasks();update();setInterval(update,1000);
+})();
+</script>
+</body>
+</html>
